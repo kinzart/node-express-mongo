@@ -56,7 +56,7 @@ const db = require("./config/db")
 
 //============ MONGOOSE ===============//
     mongoose.Promise = global.Promise;
-    mongoose.connect("mongodb+srv://dbsis:Q5jA2ivCptiezdsQ@learningnode.upjrg.mongodb.net/dbsis?retryWrites=true&w=majority" {useNewUrlParser: true}).then(() =>{
+    mongoose.connect(db.mongoURI).then(() =>{
         console.log("Mongo conectado@!")
     }).catch((err) => {
         console.log("Ops... deu ruim!   ===" + err)
