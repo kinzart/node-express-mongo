@@ -10,9 +10,9 @@ const passport = require('passport')
 
 
 
-router.get("/registro", (req, res, next) => {
+router.get("/registro", (req, res) => {
     res.render("usuarios/registro")
-    next()
+
 })
 
 
@@ -84,27 +84,27 @@ router.post("/registro", (req, res,) => {
 
 //======== LOGIN ===========//
 
-router.get("/login", (req, res, next) => {
+router.get("/login", (req, res) => {
     res.render("usuarios/login")
-    next()
+ 
 })
 
 
-router.post("/login", (req, res, next) =>{
+router.post("/login", (req, res) =>{
    passport.authenticate("local", {
        successRedirect: "/",
        failureRedirect: "/usuarios/login",
        failureFlash: true
-   })(req, res, next)
+   })(req, res)
   
 })
 
 
-router.get("/logout", (req, res, next)=>{
+router.get("/logout", (req, res,)=>{
     req.logout()
     req.flash("success_msg", "Thaw... até breve!")
     res.redirect("/")
-    next()
+    
 })
 
 module.exports = router
