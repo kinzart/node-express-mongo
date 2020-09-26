@@ -21,9 +21,10 @@ const db = require("./config/db")
 
 //========= SESSION ==============//
     app.use(session({
-       secret: "" ,
-       resave: true,
-       saveUninitialized: true
+        secret: 'keyboard cat',
+        resave: true,//false is default
+        saveUninitialized: true,
+        cookie: { secure: true }
     }))
 
 
@@ -54,9 +55,11 @@ const db = require("./config/db")
     app.engine('handlebars', handlebars({defaultLayout: 'main'}))
     app.set('view engine', 'handlebars');
 
-//============ MONGOOSE ===============//
+//============ MONGOOSE MONGODB ===============//
     mongoose.Promise = global.Promise;
-    mongoose.connect(db.mongoURI).then(() =>{
+    mongoose.connect(db.mongoURI,  {useNewUrlParser: true, useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false, }).then(() =>{
         console.log("Mongo conectado@!")
     }).catch((err) => {
         console.log("Ops... deu ruim!   ===" + err)
@@ -85,7 +88,7 @@ const db = require("./config/db")
         }) 
     })
 
-app.get("/postagem/:slug", (req, res, next) => {
+app.get("/postagem/:slug", (req, res) => {
     Postagem.findOne({slug: req.params.slug}).lean().then((postagem) => {
         if(postagem){
             console.log("Deu boa!"),
@@ -97,13 +100,13 @@ app.get("/postagem/:slug", (req, res, next) => {
     }).catch((err) => {
         req.flash("error_msg", "Houve um erro interno")
         res.redirect("/")
-        next()    
+       
     })
 })
 
 
 //============ slug POSTAGENS=================//
-app.get("/categorias/:slug", (req, res, next) => {
+app.get("/categorias/:slug", (req, res) => {
     Categoria.findOne({slug: req.params.slug}).lean().then((categoria) => {
         if(categoria){
 
@@ -122,7 +125,7 @@ app.get("/categorias/:slug", (req, res, next) => {
     }).catch((err) => {
         req.flash("error_msg", "Ops, deu um erro aqui" + err)
         res.redirect("/")
-        next()
+    
     })
     
 })
@@ -130,14 +133,14 @@ app.get("/categorias/:slug", (req, res, next) => {
 
 
 //============CATEGORIAS==============//
-app.get("/categorias", (req, res, next) => {
+app.get("/categorias", (req, res) => {
     Categoria.find().lean().then((categorias) => {
         res.render("categorias/index", {categorias: categorias})
 
     }).catch((err)=>{
         req.flash("error_msg", "Houve um erro ao carregar")
         res.redirect("/")
-        next()
+        
     })
 
 })
@@ -146,9 +149,9 @@ app.get("/categorias", (req, res, next) => {
 
 
 //========404 ERROR ROUTE=============//
-app.get("/404", (req, res, next) => {
+app.get("/404", (req, res) => {
     res.send("Erro 404  " + err)
-    next()
+
 })
 
 
@@ -158,7 +161,7 @@ app.use('/usuarios', usuarios)
 
 
 //===== LISTEN PORT ===========//
-const PORT = process.env.PORT || 3000;
-app.listen(PORT,() => {
-    console.log('Server is running...on 3000' PORT)
-} )
+const port = process.env.PORT || 3000;
+app.listen(port,function () {
+        console.log('Server is running...at 3000')
+    } )
